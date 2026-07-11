@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <title>Редактор Пропуска</title>
 <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+<link rel="preload" as="image" href="unnamed.png">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
 <style>
@@ -72,10 +73,10 @@
   .date-year { width: 25px; margin: 0 2px; }
 
   .footer { display: flex; justify-content: space-between; align-items: flex-end; margin-top: 15px; font-size: 14px; position: relative; }
-  .footer-left { width: 55%; }
-  .footer-right { width: 42%; }
+  .footer-left { width: 62%; } 
+  .footer-right { width: 35%; }
   
-  .sign-row { display: flex; align-items: flex-end; margin-bottom: 8px; }
+  .sign-row { display: flex; align-items: flex-end; margin-bottom: 8px; white-space: nowrap; }
   .sign-line { flex-grow: 1; border-bottom: 1px solid #333; margin: 0 10px; position: relative; display: inline-flex; align-items: flex-end; justify-content: center; }
   .sign-sub { position: absolute; top: 100%; left: 0; width: 100%; font-size: 10px; text-align: center; color: #000; font-family: 'Roboto', sans-serif;}
   
@@ -201,7 +202,7 @@
 
         <div class="header">
           <div class="emblem-area">
-             <img id="viewEmblem" src="ВСТАВЬ_КОД_СЮДА" style="display:block;">
+             <img id="viewEmblem" src="unnamed.png" style="display:block;">
           </div>
           <div class="title-area">
             <h1>ПРОПУСК</h1>
@@ -263,8 +264,8 @@
           <div class="footer-left">
             <div class="sign-row">
               <div class="label" style="font-size: 13px;">Руководитель подразделения</div>
-              <div class="sign-line" style="margin: 0 5px;"><span class="sign-sub">(подпись)</span></div>
-              <div class="sign-line" style="width: 100px; flex-grow: 0; margin-right: 0;"><span class="hw-text" id="outBossFio" style="left:50%; transform:translate(-50%, 3px); font-size: 20px;"></span><span class="sign-sub">(Ф.И.О.)</span></div>
+              <div class="sign-line" style="min-width: 50px;"><span class="sign-sub">(подпись)</span></div>
+              <div class="sign-line" style="width: 140px; flex-grow: 0; margin-right: 0;"><span class="hw-text" id="outBossFio" style="font-size: 20px;"></span><span class="sign-sub">(Ф.И.О.)</span></div>
             </div>
             <div class="mp-label">М.П.</div>
           </div>
