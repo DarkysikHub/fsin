@@ -4,7 +4,6 @@
 <meta charset="UTF-8">
 <title>Редактор Пропуска</title>
 <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
-<link rel="preload" as="image" href="unnamed.png">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
 <style>
@@ -73,8 +72,8 @@
   .date-year { width: 25px; margin: 0 2px; }
 
   .footer { display: flex; justify-content: space-between; align-items: flex-end; margin-top: 15px; font-size: 14px; position: relative; }
-  .footer-left { width: 50%; }
-  .footer-right { width: 45%; }
+  .footer-left { width: 55%; }
+  .footer-right { width: 42%; }
   
   .sign-row { display: flex; align-items: flex-end; margin-bottom: 8px; }
   .sign-line { flex-grow: 1; border-bottom: 1px solid #333; margin: 0 10px; position: relative; display: inline-flex; align-items: flex-end; justify-content: center; }
@@ -166,6 +165,11 @@
         <input type="file" id="photoFile" accept="image/*">
       </div>
 
+      <div class="control-group" style="grid-column: span 2;">
+        <label>Руководитель (Ф.И.О. кто выдал пропуск):</label>
+        <input type="text" id="inBossFio" placeholder="Петров П.П.">
+      </div>
+
       <div class="stamp-controls">
         <label style="margin-top:0;">Печать / Подпись (прозрачный PNG):</label>
         <input type="file" id="sigStampFile" accept="image/*">
@@ -183,7 +187,7 @@
         </div>
       </div>
       
-      <button onclick="saveCert()">Скачать пропуск</button>
+      <button onclick="saveCert()">Скачать картинкой (PNG)</button>
     </div>
   </div>
 
@@ -197,7 +201,7 @@
 
         <div class="header">
           <div class="emblem-area">
-             <img id="viewEmblem" src="unnamed.png" style="display:block;">
+             <img id="viewEmblem" src="ВСТАВЬ_КОД_СЮДА" style="display:block;">
           </div>
           <div class="title-area">
             <h1>ПРОПУСК</h1>
@@ -258,8 +262,9 @@
         <div class="footer">
           <div class="footer-left">
             <div class="sign-row">
-              <div class="label">Руководитель подразделения</div>
-              <div class="sign-line"><span class="sign-sub">(подпись)</span></div>
+              <div class="label" style="font-size: 13px;">Руководитель подразделения</div>
+              <div class="sign-line" style="margin: 0 5px;"><span class="sign-sub">(подпись)</span></div>
+              <div class="sign-line" style="width: 100px; flex-grow: 0; margin-right: 0;"><span class="hw-text" id="outBossFio" style="left:50%; transform:translate(-50%, 3px); font-size: 20px;"></span><span class="sign-sub">(Ф.И.О.)</span></div>
             </div>
             <div class="mp-label">М.П.</div>
           </div>
@@ -299,6 +304,7 @@
   bindText('inZones', 'outZones');
   bindText('inPurpose', 'outPurpose');
   bindText('inPassNum', 'outPassNum');
+  bindText('inBossFio', 'outBossFio');
 
   const typeSelector = document.getElementById('passType');
   const allTypes = ["Постоянный", "Служебный", "Временный", "Разовый", "Материальный"];
