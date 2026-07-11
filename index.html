@@ -4,7 +4,6 @@
 <meta charset="UTF-8">
 <title>Редактор Пропуска</title>
 <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
-<link rel="preload" as="image" href="unnamed.png">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
 <style>
@@ -73,14 +72,14 @@
   .date-year { width: 25px; margin: 0 2px; }
 
   .footer { display: flex; justify-content: space-between; align-items: flex-end; margin-top: 15px; font-size: 14px; position: relative; }
-  .footer-left { width: 62%; } 
+  .footer-left { width: 62%; display: flex; flex-direction: column; justify-content: flex-end; } 
   .footer-right { width: 35%; }
   
   .sign-row { display: flex; align-items: flex-end; margin-bottom: 8px; white-space: nowrap; }
-  .sign-line { flex-grow: 1; border-bottom: 1px solid #333; margin: 0 10px; position: relative; display: inline-flex; align-items: flex-end; justify-content: center; }
+  .sign-line { border-bottom: 1px solid #333; margin: 0 10px; position: relative; display: inline-flex; align-items: flex-end; justify-content: center; }
   .sign-sub { position: absolute; top: 100%; left: 0; width: 100%; font-size: 10px; text-align: center; color: #000; font-family: 'Roboto', sans-serif;}
   
-  .mp-label { font-weight: bold; margin-top: 15px; }
+  .mp-label { font-weight: bold; margin-top: 10px; }
 
   .sig-stamp-container { position: absolute; top: 0; left: 0; right: 0; bottom: 0; z-index: 10; pointer-events: none; display: flex; align-items: center; justify-content: center; }
   .stamp-image { transition: transform 0.1s; transform-origin: center center; max-height: 200px; display: none; }
@@ -202,7 +201,7 @@
 
         <div class="header">
           <div class="emblem-area">
-             <img id="viewEmblem" src="unnamed.png" style="display:block;">
+             <img id="viewEmblem" src="./unnamed.png" style="display:block;">
           </div>
           <div class="title-area">
             <h1>ПРОПУСК</h1>
@@ -262,23 +261,23 @@
 
         <div class="footer">
           <div class="footer-left">
-            <div class="sign-row">
-              <div class="label" style="font-size: 13px;">Руководитель подразделения</div>
-              <div class="sign-line" style="min-width: 50px;"><span class="sign-sub">(подпись)</span></div>
-              <div class="sign-line" style="width: 140px; flex-grow: 0; margin-right: 0;"><span class="hw-text" id="outBossFio" style="font-size: 20px;"></span><span class="sign-sub">(Ф.И.О.)</span></div>
+            <div class="label" style="font-size: 15px; margin-bottom: 22px;">Руководитель подразделения:</div>
+            <div class="sign-row" style="margin-bottom: 0;">
+              <div class="sign-line" style="width: 80px; margin-left: 0;"><span class="sign-sub">(подпись)</span></div>
+              <div class="sign-line" style="width: 170px;"><span class="hw-text" id="outBossFio" style="font-size: 20px;"></span><span class="sign-sub">(Ф.И.О.)</span></div>
             </div>
             <div class="mp-label">М.П.</div>
           </div>
           
           <div class="footer-right">
-            <div class="sign-row">
+            <div class="sign-row" style="flex-grow: 1;">
               <div class="label">Дата выдачи: «<div class="date-part date-day" style="width:30px;"><span class="hw-text" id="outD3"></span></div>»</div>
-              <div class="sign-line" style="margin:0 5px;"><span class="hw-text" id="outM3"></span></div>
+              <div class="sign-line" style="margin:0 5px; flex-grow: 1;"><span class="hw-text" id="outM3"></span></div>
               <div class="label">20<div class="date-part date-year" style="width:25px;"><span class="hw-text" id="outY3"></span></div> г.</div>
             </div>
-            <div class="sign-row" style="margin-top:10px;">
+            <div class="sign-row" style="margin-top:15px;">
               <div class="label">№ пропуска:</div>
-              <div class="sign-line"><span class="hw-text" id="outPassNum"></span></div>
+              <div class="sign-line" style="flex-grow: 1;"><span class="hw-text" id="outPassNum"></span></div>
             </div>
           </div>
         </div>
