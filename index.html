@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<title>Редактор Пропуска</title>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+<style>
+  :root {
+    --hw-color: #00008b;
+    --main-green: #1a4a28;
+  }
+
+  body { font-family: 'Roboto', sans-serif; background: #e0e0e0; margin: 0; padding: 20px; }
+  .main-wrapper { max-width: 1500px; margin: auto; display: flex; gap: 20px; flex-wrap: wrap; align-items: flex-start; justify-content: center; }
+  
+  .controls { background: #fff; padding: 20px; border-radius: 10px; width: 650px; flex-shrink: 0; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+  .controls h3 { margin-top: 0; text-align: center; margin-bottom: 15px; }
+  
+  .controls-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px 20px; }
+  .control-group { display: flex; flex-direction: column; }
+  
+  .controls label { font-size: 12px; font-weight: bold; margin-bottom: 3px; color: #333; }
+  .controls input[type="text"], .controls input[type="date"], .controls select { width: 100%; padding: 6px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px; font-size: 13px; }
+  .controls input[type="file"] { font-size: 12px; }
+  
+  .controls button { background: #1a4a28; color: #fff; border: none; padding: 12px; width: 100%; cursor: pointer; font-weight: bold; margin-top: 15px; border-radius: 5px; font-size: 16px; transition: 0.2s; grid-column: span 2; }
+  .controls button:hover { background: #11331b; }
+  
+  .stamp-controls { border: 1px solid #ddd; padding: 10px; border-radius: 5px; background: #f9f9f9; grid-column: span 2; }
+  .slider-group { display: flex; align-items: center; justify-content: space-between; margin-top: 5px; }
+  .slider-group input { width: 70%; }
+
+  .date-group { display: flex; gap: 10px; }
+  .date-group > div { flex: 1; }
+
+  .pass-wrapper { position: relative; user-select: none; }
+  .pass-container { width: 800px; height: 540px; background: #f4f7f4; border: 1px solid #888; box-sizing: border-box; padding: 10px; position: relative; box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
+  
+  .pass-inner-border { width: 100%; height: 100%; border: 3px solid #5a7b62; outline: 1px solid #333; outline-offset: -5px; box-sizing: border-box; padding: 15px 25px; position: relative; background: repeating-linear-gradient(45deg, rgba(255,255,255,0.4), rgba(255,255,255,0.4) 2px, transparent 2px, transparent 4px); }
+
+  .header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; }
+  .emblem-area { width: 130px; height: 140px; display: flex; align-items: center; justify-content: center; }
+  .emblem-area img { max-width: 100%; max-height: 100%; object-fit: contain; }
+  
+  .title-area { text-align: center; flex-grow: 1; padding-top: 5px; }
+  .title-area h1 { margin: 0; font-size: 42px; color: var(--main-green); font-weight: bold; letter-spacing: 2px; }
+  .title-area h2 { margin: 2px 0 0 0; font-size: 18px; color: var(--main-green); font-weight: bold; line-height: 1.2; }
+
+  .photo-box { width: 100px; height: 135px; border: 1px solid #555; border-radius: 8px; display: flex; align-items: center; justify-content: center; text-align: center; font-size: 11px; color: #333; background: #fff; overflow: hidden; position: relative; }
+  .photo-img { width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0; z-index: 2; display: none; }
+  .photo-text { position: relative; z-index: 1; }
+
+  .pass-type-row { font-size: 15px; font-weight: bold; margin-bottom: 10px; display: flex; align-items: center; gap: 15px; flex-wrap: wrap; }
+  .pass-type-label { margin-right: 5px; }
+  .checkbox-item { display: flex; align-items: center; font-size: 13px; font-weight: normal; gap: 4px; }
+  .checkbox-square { width: 14px; height: 14px; border: 1px solid #000; display: flex; align-items: center; justify-content: center; font-family: sans-serif; font-size: 12px; font-weight: bold; background: #fff; padding-bottom: 2px; box-sizing: border-box; }
+
+  /* ИСПРАВЛЕННОЕ ВЫРАВНИВАНИЕ СТРОК */
+  .form-row { display: flex; align-items: flex-end; margin-bottom: 8px; font-size: 15px; font-weight: bold; }
+  .form-row .label { white-space: nowrap; margin-right: 10px; }
+  .form-row .value { 
+      flex-grow: 1; 
+      border-bottom: 1px solid #333; 
+      min-height: 22px; 
+      padding-left: 10px; 
+      display: flex; 
+      align-items: flex-end; /* Текст прижимается к низу */
+  }
+  
+  .hw-text { 
+      font-family: 'Caveat', cursive; 
+      color: var(--hw-color); 
+      font-size: 25px; 
+      line-height: 0.8; 
+      transform: translateY(3px); /* Смещение, чтобы буквы касались линии */
+      white-space: nowrap; 
+      font-weight: 700; 
+  }
+
+  .dates-row { font-size: 15px; font-weight: bold; margin-top: 10px; }
+  .dates-inline { display: flex; align-items: flex-end; margin-top: 5px; padding-left: 20px; font-weight: normal; }
+  
+  .date-part { 
+      border-bottom: 1px solid #333; 
+      display: inline-flex; 
+      align-items: flex-end; 
+      justify-content: center; /* Центрируем числа и месяцы */
+  }
+  .date-day { width: 35px; margin: 0 5px; }
+  .date-month { width: 100px; margin: 0 5px; }
+  .date-year { width: 25px; margin: 0 2px; }
+
+  .footer { display: flex; justify-content: space-between; align-items: flex-end; margin-top: 15px; font-size: 14px; position: relative; }
+  .footer-left { width: 50%; }
+  .footer-right { width: 45%; }
+  
+  .sign-row { display: flex; align-items: flex-end; margin-bottom: 8px; }
+  .sign-line { 
+      flex-grow: 1; 
+      border-bottom: 1px solid #333; 
+      margin: 0 10px; 
+      position: relative; 
+      display: inline-flex; 
+      align-items: flex-end; 
+      justify-content: center; /* Центрируем подписи и номер пропуска */
+  }
+  .sign-sub { position: absolute; top: 100%; left: 0; width: 100%; font-size: 10px; text-align: center; color: #000; font-family: 'Roboto', sans-serif;}
+  
+  .mp-label { font-weight: bold; margin-top: 15px; }
+
+  .sig-stamp-container { position: absolute; top: 0; left: 0; right: 0; bottom: 0; z-index: 10; pointer-events: none; display: flex; align-items: center; justify-content: center; }
+  .stamp-image { transition: transform 0.1s; transform-origin: center center; max-height: 200px; display: none; }
+
+</style>
+</head>
+<body>
+
+<div class="main-wrapper">
+  
+  <div class="controls">
+    <h3>Редактор пропуска</h3>
+    
+    <div class="controls-grid">
+      <div class="control-group">
+        <label>Цвет чернил:</label>
+        <select id="hwColor">
+          <option value="#00008b">Синий</option>
+          <option value="#000000">Черный</option>
+          <option value="#4b0082">Фиолетовый</option>
+        </select>
+      </div>
+
+      <div class="control-group">
+        <label>Вид пропуска:</label>
+        <select id="passType">
+          <option value="Постоянный">Постоянный</option>
+          <option value="Служебный">Служебный</option>
+          <option value="Временный">Временный</option>
+          <option value="Разовый">Разовый</option>
+          <option value="Материальный">Материальный</option>
+        </select>
+      </div>
+
+      <div class="control-group">
+        <label>1. Выдан (Ф.И.О.):</label>
+        <input type="text" id="inFio" placeholder="Иванов Иван Иванович">
+      </div>
+
+      <div class="control-group">
+        <label>2. Должность / Статус лица:</label>
+        <input type="text" id="inStatus" placeholder="Начальник отдела">
+      </div>
+
+      <div class="control-group">
+        <label>3. Документ, удост. личность:</label>
+        <input type="text" id="inPassport" placeholder="Паспорт 12 34 567890">
+      </div>
+
+      <div class="control-group">
+        <label>4. Доступ на объекты (зоны):</label>
+        <input type="text" id="inZones" placeholder="Все зоны">
+      </div>
+
+      <div class="control-group" style="grid-column: span 2;">
+        <label>5. Цель пребывания:</label>
+        <input type="text" id="inPurpose" placeholder="Служебная необходимость">
+      </div>
+
+      <div class="control-group">
+        <label>Действителен с — по:</label>
+        <div class="date-group">
+          <input type="date" id="inDateFrom">
+          <input type="date" id="inDateTo">
+        </div>
+      </div>
+
+      <div class="control-group">
+        <label>Дата выдачи / № пропуска:</label>
+        <div class="date-group">
+          <input type="date" id="inIssueDate">
+          <input type="text" id="inPassNum" placeholder="№">
+        </div>
+      </div>
+
+      <div class="control-group">
+        <label>Герб (свой, если нужно):</label>
+        <input type="file" id="emblemFile" accept="image/*">
+      </div>
+
+      <div class="control-group">
+        <label>Фотография сотрудника:</label>
+        <input type="file" id="photoFile" accept="image/*">
+      </div>
+
+      <div class="stamp-controls">
+        <label style="margin-top:0;">Печать / Подпись (прозрачный PNG):</label>
+        <input type="file" id="sigStampFile" accept="image/*">
+        <div class="slider-group">
+          <small>Размер:</small>
+          <input type="range" id="sizeRange" min="50" max="400" value="150">
+        </div>
+        <div class="slider-group">
+          <small>Смещение X:</small>
+          <input type="range" id="xRange" min="-400" max="400" value="0">
+        </div>
+        <div class="slider-group">
+          <small>Смещение Y:</small>
+          <input type="range" id="yRange" min="-300" max="300" value="150">
+        </div>
+      </div>
+      
+      <button onclick="saveCert()">Скачать пропуск</button>
+    </div>
+  </div>
+
+  <div class="pass-wrapper">
+    <div id="passArea" class="pass-container">
+      <div class="pass-inner-border">
+        
+        <div class="sig-stamp-container">
+            <img id="viewSigStamp" src="" class="stamp-image">
+        </div>
+
+        <div class="header">
+          <div class="emblem-area">
+             <img id="viewEmblem" src="unnamed.jpg" style="display:block;">
+          </div>
+          <div class="title-area">
+            <h1>ПРОПУСК</h1>
+            <h2>НА ОБЪЕКТЫ ФЕДЕРАЛЬНОЙ СЛУЖБЫ<br>ИСПОЛНЕНИЯ НАКАЗАНИЙ</h2>
+          </div>
+          <div class="photo-box">
+            <div class="photo-text" id="photoPlaceholderText">ФОТО<br>(по желанию)</div>
+            <img id="viewPhoto" src="" class="photo-img">
+          </div>
+        </div>
+
+        <div class="pass-type-row">
+          <div class="pass-type-label">Вид пропуска:</div>
+          <div class="checkbox-item"><div class="checkbox-square" id="cb_Постоянный"></div> Постоянный</div>
+          <div class="checkbox-item"><div class="checkbox-square" id="cb_Служебный"></div> Служебный</div>
+          <div class="checkbox-item"><div class="checkbox-square" id="cb_Временный"></div> Временный</div>
+          <div class="checkbox-item"><div class="checkbox-square" id="cb_Разовый"></div> Разовый</div>
+          <div class="checkbox-item"><div class="checkbox-square" id="cb_Материальный"></div> Материальный</div>
+        </div>
+
+        <div class="form-row">
+          <div class="label">1. Выдан (Ф.И.О.):</div>
+          <div class="value"><span class="hw-text" id="outFio"></span></div>
+        </div>
+        
+        <div class="form-row">
+          <div class="label">2. Должность / Статус лица:</div>
+          <div class="value"><span class="hw-text" id="outStatus"></span></div>
+        </div>
+
+        <div class="form-row">
+          <div class="label">3. Документ, удостоверяющий личность (№ паспорта):</div>
+          <div class="value"><span class="hw-text" id="outPassport"></span></div>
+        </div>
+
+        <div class="form-row">
+          <div class="label">4. Разрешен доступ на объекты (зоны):</div>
+          <div class="value"><span class="hw-text" id="outZones"></span></div>
+        </div>
+
+        <div class="form-row">
+          <div class="label">5. Цель пребывания:</div>
+          <div class="value"><span class="hw-text" id="outPurpose"></span></div>
+        </div>
+
+        <div class="dates-row">
+          <div>6. Срок действия:</div>
+          <div class="dates-inline">
+            Действителен с «<div class="date-part date-day"><span class="hw-text" id="outD1"></span></div>» 
+            <div class="date-part date-month"><span class="hw-text" id="outM1"></span></div> 
+            20<div class="date-part date-year"><span class="hw-text" id="outY1"></span></div> г. 
+            по «<div class="date-part date-day"><span class="hw-text" id="outD2"></span></div>» 
+            <div class="date-part date-month"><span class="hw-text" id="outM2"></span></div> 
+            20<div class="date-part date-year"><span class="hw-text" id="outY2"></span></div> г.
+          </div>
+        </div>
+
+        <div class="footer">
+          <div class="footer-left">
+            <div class="sign-row">
+              <div class="label">Руководитель подразделения</div>
+              <div class="sign-line"><span class="sign-sub">(подпись)</span></div>
+            </div>
+            <div class="mp-label">М.П.</div>
+          </div>
+          
+          <div class="footer-right">
+            <div class="sign-row">
+              <div class="label">Дата выдачи: «<div class="date-part date-day" style="width:30px;"><span class="hw-text" id="outD3"></span></div>»</div>
+              <div class="sign-line" style="margin:0 5px;"><span class="hw-text" id="outM3"></span></div>
+              <div class="label">20<div class="date-part date-year" style="width:25px;"><span class="hw-text" id="outY3"></span></div> г.</div>
+            </div>
+            <div class="sign-row" style="margin-top:10px;">
+              <div class="label">№ пропуска:</div>
+              <div class="sign-line"><span class="hw-text" id="outPassNum"></span></div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  document.getElementById('hwColor').addEventListener('change', function() {
+      document.documentElement.style.setProperty('--hw-color', this.value);
+  });
+
+  function bindText(inputId, outputId) {
+      document.getElementById(inputId).addEventListener('input', function() {
+          document.getElementById(outputId).innerText = this.value;
+      });
+  }
+  bindText('inFio', 'outFio');
+  bindText('inStatus', 'outStatus');
+  bindText('inPassport', 'outPassport');
+  bindText('inZones', 'outZones');
+  bindText('inPurpose', 'outPurpose');
+  bindText('inPassNum', 'outPassNum');
+
+  const typeSelector = document.getElementById('passType');
+  const allTypes = ["Постоянный", "Служебный", "Временный", "Разовый", "Материальный"];
+  
+  function updateCheckboxes() {
+    allTypes.forEach(type => {
+      const cb = document.getElementById('cb_' + type);
+      if(cb) cb.innerHTML = (type === typeSelector.value) ? '&#10003;' : '';
+    });
+  }
+  typeSelector.addEventListener('change', updateCheckboxes);
+  updateCheckboxes(); 
+
+  const monthsStr = ["января", "февраля", "марта", "апреля", "мая", "июня", "июля", "августа", "сентября", "октября", "ноября", "декабря"];
+  
+  function bindDate(inputId, dId, mId, yId) {
+      document.getElementById(inputId).addEventListener('change', function() {
+          const val = this.value;
+          if(!val) {
+              document.getElementById(dId).innerText = '';
+              document.getElementById(mId).innerText = '';
+              document.getElementById(yId).innerText = '';
+              return;
+          }
+          const d = new Date(val);
+          document.getElementById(dId).innerText = String(d.getDate()).padStart(2, '0');
+          document.getElementById(mId).innerText = monthsStr[d.getMonth()];
+          document.getElementById(yId).innerText = String(d.getFullYear()).slice(-2);
+      });
+  }
+  bindDate('inDateFrom', 'outD1', 'outM1', 'outY1');
+  bindDate('inDateTo', 'outD2', 'outM2', 'outY2');
+  bindDate('inIssueDate', 'outD3', 'outM3', 'outY3');
+
+  function setupImage(inputId, imgId, callback) {
+    document.getElementById(inputId).addEventListener('change', function(e) {
+      if (this.files && this.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(event) { 
+            const img = document.getElementById(imgId);
+            img.src = event.target.result; 
+            img.style.display = 'block';
+            if(callback) callback();
+        }
+        reader.readAsDataURL(this.files[0]);
+      }
+    });
+  }
+  
+  setupImage('photoFile', 'viewPhoto', function() {
+      document.getElementById('photoPlaceholderText').style.display = 'none';
+  });
+  setupImage('emblemFile', 'viewEmblem');
+  setupImage('sigStampFile', 'viewSigStamp');
+
+  const sizeRange = document.getElementById('sizeRange');
+  const xRange = document.getElementById('xRange');
+  const yRange = document.getElementById('yRange');
+  const stamp = document.getElementById('viewSigStamp');
+
+  function updateStamp() {
+    stamp.style.maxHeight = sizeRange.value + 'px';
+    stamp.style.transform = `translate(${xRange.value}px, ${yRange.value}px)`;
+  }
+  [sizeRange, xRange, yRange].forEach(el => el.addEventListener('input', updateStamp));
+
+  function saveCert() {
+    html2canvas(document.querySelector("#passArea"), { 
+        scale: 2, 
+        backgroundColor: null 
+    }).then(canvas => {
+      const link = document.createElement('a');
+      link.download = 'propusk.png';
+      link.href = canvas.toDataURL("image/png");
+      link.click();
+    });
+  }
+</script>
+
+</body>
+</html>
