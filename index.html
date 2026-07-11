@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <title>Редактор Пропуска</title>
 <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+<link rel="preload" as="image" href="unnamed.png">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
 <style>
@@ -57,37 +58,16 @@
   .checkbox-item { display: flex; align-items: center; font-size: 13px; font-weight: normal; gap: 4px; }
   .checkbox-square { width: 14px; height: 14px; border: 1px solid #000; display: flex; align-items: center; justify-content: center; font-family: sans-serif; font-size: 12px; font-weight: bold; background: #fff; padding-bottom: 2px; box-sizing: border-box; }
 
-  /* ИСПРАВЛЕННОЕ ВЫРАВНИВАНИЕ СТРОК */
   .form-row { display: flex; align-items: flex-end; margin-bottom: 8px; font-size: 15px; font-weight: bold; }
   .form-row .label { white-space: nowrap; margin-right: 10px; }
-  .form-row .value { 
-      flex-grow: 1; 
-      border-bottom: 1px solid #333; 
-      min-height: 22px; 
-      padding-left: 10px; 
-      display: flex; 
-      align-items: flex-end; /* Текст прижимается к низу */
-  }
+  .form-row .value { flex-grow: 1; border-bottom: 1px solid #333; min-height: 22px; padding-left: 10px; display: flex; align-items: flex-end; }
   
-  .hw-text { 
-      font-family: 'Caveat', cursive; 
-      color: var(--hw-color); 
-      font-size: 25px; 
-      line-height: 0.8; 
-      transform: translateY(3px); /* Смещение, чтобы буквы касались линии */
-      white-space: nowrap; 
-      font-weight: 700; 
-  }
+  .hw-text { font-family: 'Caveat', cursive; color: var(--hw-color); font-size: 25px; line-height: 0.8; transform: translateY(3px); white-space: nowrap; font-weight: 700; }
 
   .dates-row { font-size: 15px; font-weight: bold; margin-top: 10px; }
   .dates-inline { display: flex; align-items: flex-end; margin-top: 5px; padding-left: 20px; font-weight: normal; }
   
-  .date-part { 
-      border-bottom: 1px solid #333; 
-      display: inline-flex; 
-      align-items: flex-end; 
-      justify-content: center; /* Центрируем числа и месяцы */
-  }
+  .date-part { border-bottom: 1px solid #333; display: inline-flex; align-items: flex-end; justify-content: center; }
   .date-day { width: 35px; margin: 0 5px; }
   .date-month { width: 100px; margin: 0 5px; }
   .date-year { width: 25px; margin: 0 2px; }
@@ -97,15 +77,7 @@
   .footer-right { width: 45%; }
   
   .sign-row { display: flex; align-items: flex-end; margin-bottom: 8px; }
-  .sign-line { 
-      flex-grow: 1; 
-      border-bottom: 1px solid #333; 
-      margin: 0 10px; 
-      position: relative; 
-      display: inline-flex; 
-      align-items: flex-end; 
-      justify-content: center; /* Центрируем подписи и номер пропуска */
-  }
+  .sign-line { flex-grow: 1; border-bottom: 1px solid #333; margin: 0 10px; position: relative; display: inline-flex; align-items: flex-end; justify-content: center; }
   .sign-sub { position: absolute; top: 100%; left: 0; width: 100%; font-size: 10px; text-align: center; color: #000; font-family: 'Roboto', sans-serif;}
   
   .mp-label { font-weight: bold; margin-top: 15px; }
@@ -225,7 +197,7 @@
 
         <div class="header">
           <div class="emblem-area">
-             <img id="viewEmblem" src="https://darkysikhub.github.io/fsin/unnamed.png" style="display:block;">
+             <img id="viewEmblem" src="unnamed.png" style="display:block;">
           </div>
           <div class="title-area">
             <h1>ПРОПУСК</h1>
